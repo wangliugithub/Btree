@@ -9,15 +9,13 @@ using namespace std;
 #define MIN (M/2) //最小元素个数
 
 typedef char KeyType;
-typedef struct {}Record; //??????
+typedef struct {}Record; //记录值指针
 
 typedef struct //键值对
 {
 	KeyType key;
-	Record *recptr; //??????id 所对应的值
+	Record *recptr; //所对应的值
 }ElemType; //结点的元素类型
-
-
 
 
 typedef struct BNode //B树结点
@@ -26,7 +24,6 @@ typedef struct BNode //B树结点
 	BNode *parent; 
 	ElemType data[M+1]; //data[0]做哨兵位，data[5]做分裂用
 	BNode *sub[M+1];
-
 }BNode,*BTree;
 
 //作为查询元素时存放结果的，当中包含该元素的指针和该元素的位置信息，以及是否查询到的标志位
@@ -37,6 +34,7 @@ typedef struct
 	bool tag;
 }Result;
 
+//购买结点
 BNode *BuyNode()
 {
 	BNode *p = (BNode *)malloc(sizeof(BNode));
@@ -45,12 +43,12 @@ BNode *BuyNode()
 	memset(p,0,sizeof(BNode));	
 	return p;
 }
-
+//释放结点
 void FreeNode(BNode *p)
 {
 	free(p);
 }
-
+//查询值
 Result FindValue(BNode *ptr,KeyType kx)
 {
 	Result res = { NULL,-1,false};
@@ -70,7 +68,7 @@ Result FindValue(BNode *ptr,KeyType kx)
 	}
 	return res;
 }
-
+//产生新根
 BNode* MakeNode(ElemType kx,BNode *left,BNode *right)
  {
 	BNode *p = BuyNode();
@@ -108,7 +106,7 @@ void insert_item(BNode *p,int pos,ElemType kx,BNode *right)
 	}
 	p->num +=1;
 }
-
+//分裂时移动数据的函数
 ElemType move_item(BNode *p,BNode *s,int pos)
 {
 	int i = pos+1;
@@ -153,7 +151,6 @@ BNode *Splice(BNode *p)
 	else
 		return NULL;
 }
-
 //B树的插入
 bool insert(BTree *ptr,ElemType kx)
 {
@@ -185,6 +182,7 @@ bool insert(BTree *ptr,ElemType kx)
 	return true;
 }
 
+//B树是排序树，中序遍历得到的是有序的
 void InOrder(BNode *ptr)
 {
 	if (ptr!= NULL)
@@ -197,7 +195,7 @@ void InOrder(BNode *ptr)
 		}
 	}
 }
-
+//寻找前驱函数
 BNode *FindPre(BNode *ptr)
 {
 	while (ptr != NULL && ptr->sub[ptr->num] != NULL)
@@ -206,7 +204,7 @@ BNode *FindPre(BNode *ptr)
 	}
 	return ptr;
 }
-
+//寻找后继函数
 BNode *FindNext(BNode *ptr)
 {
 	while (ptr != NULL && ptr->sub[0] != NULL)
@@ -215,7 +213,7 @@ BNode *FindNext(BNode *ptr)
 	}
 	return ptr;
 }
-
+//叶子节点的删除
 void Del_Leaf_Item(BNode *p,int pos)
 {
 	for (int i=pos;i<p->num;++i)
@@ -225,7 +223,6 @@ void Del_Leaf_Item(BNode *p,int pos)
 	}
 	p->num -= 1;
 }
-
 
 void main()
 {
